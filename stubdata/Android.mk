@@ -13,25 +13,12 @@
 # limitations under the License.
 
 #
-# To get your own ICU userdata:
-#
-# Go to http://apps.icu-project.org/datacustom/ and configure yourself
-# a data file.  Unzip the file it gives you, and save that somewhere,
-# Set the icu_var_name variable to the location of that file in the tree.
-#
-# Make sure to choose ICU4C at the bottom.  You should also
-# make sure to pick all of the following options, as they are required
-# by the system.  Things will fail quietly if you don't have them:
-#
-# TODO: >>> base list goes here once we have it <<<
-#
-
-
-#
 # Common definitions for all variants.
 #
 
 LOCAL_PATH:= $(call my-dir)
+
+include $(CLEAR_VARS)
 
 # Build configuration:
 #
@@ -73,7 +60,13 @@ config := $(word 1, \
 
 include $(LOCAL_PATH)/root.mk
 
-PRODUCT_COPY_FILES += $(LOCAL_PATH)/$(root)-$(config).dat:/system/usr/icu/$(root).dat
+LOCAL_MODULE := icu.dat
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_CLASS := ETC
+LOCAL_MODULE_PATH := $(TARGET_OUT)/usr/icu
+LOCAL_MODULE_STEM := $(root).dat
+LOCAL_SRC_FILES := $(root)-$(config).dat
+include $(BUILD_PREBUILT)
 
 ifeq ($(WITH_HOST_DALVIK),true)
     $(eval $(call copy-one-file,$(LOCAL_PATH)/$(root)-$(config).dat,$(HOST_OUT)/usr/icu/$(root).dat))
